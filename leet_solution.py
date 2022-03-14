@@ -1,42 +1,30 @@
 class Solution(object):
-    def isValid(self, s: str) -> bool:
-        stackparen = []
-        for c in s:
-            match c:
-                case '(':
-                    stackparen.append(c)
-                case ')':
-                    if not stackparen or stackparen[-1] != '(':
-                        return False
-                    else:
-                        stackparen.pop()
-                case '{':
-                    stackparen.append(c)
-                case '}':
-                    if not stackparen or stackparen[-1] != '{':
-                        return False
-                    else:
-                        stackparen.pop()
-                case '[':
-                    stackparen.append(c)
-                case ']':
-                    if not stackparen or stackparen[-1] != '[':
-                        return False
-                    else:
-                        stackparen.pop()
+    def simplifyPath(self, path):
+        """
+        :type path: str
+        :rtype: str
+        """
+        stack = []
 
-        if stackparen:
-            return False
-        else:
-            return True
-                
+        for portion in path.split("/"):
+            print(portion)
+            if portion == "..":
+                if stack:
+                    stack.pop()
+            elif portion == "." or not portion:
+                continue
+            else:
+                stack.append(portion)
+
+        final_path = "/" + "/".join(stack)
+        return final_path
+
 
 
 
 sol = Solution()
 
-s = "(]"
-print(s)
+path = "/a/b/c/.././././//d"
 
-result = sol.isValid(s)
+result = sol.simplifyPath(path)
 print(result)
