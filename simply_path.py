@@ -1,3 +1,6 @@
+# daily challenge mar. 14
+# simply path
+
 class Solution(object):
     def simplifyPath(self, path):
         """
