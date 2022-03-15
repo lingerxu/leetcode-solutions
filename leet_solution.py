@@ -1,26 +1,25 @@
 class Solution(object):
-    def simplifyPath(self, path):
-        """
-        :type path: str
-        :rtype: str
-        """
+    def minRemoveToMakeValid(self, s):
         stack = []
-
-        for portion in path.split("/"):
-            if portion == "..":
+        removeinx = set()
+        for i, c in enumerate(s):
+            if c == "(":
+                stack.append(i)
+            elif c == ")":
                 if stack:
                     stack.pop()
-            elif portion == "." or not portion:
-                continue
-            else:
-                stack.append(portion)
-
-        final_path = "/" + "/".join(stack)
-        return final_path
+                else:
+                    removeinx.add(i)
+        removeinx = removeinx.union(set(stack))
+        result = []
+        for i, c in enumerate(s):
+            if i not in removeinx:
+                result.append(c)
+        return "".join(result)
 
 
 sol = Solution()
-path = "/a/b/c/.././././//d"
+path = "L(ee)))t(()co(de"
 
-result = sol.simplifyPath(path)
+result = sol.minRemoveToMakeValid(path)
 print(result)
