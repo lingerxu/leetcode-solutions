@@ -1,25 +1,25 @@
 class Solution(object):
-    def minRemoveToMakeValid(self, s):
+    def validateStackSequences(self, pushed, popped):
+        """
+        :type pushed: List[int]
+        :type popped: List[int]
+        :rtype: bool
+        """
+        len_pop = len(popped)
         stack = []
-        removeinx = set()
-        for i, c in enumerate(s):
-            if c == "(":
-                stack.append(i)
-            elif c == ")":
-                if stack:
-                    stack.pop()
-                else:
-                    removeinx.add(i)
-        removeinx = removeinx.union(set(stack))
-        result = []
-        for i, c in enumerate(s):
-            if i not in removeinx:
-                result.append(c)
-        return "".join(result)
+        pointer_pop = 0
+        for val in pushed:
+            stack.append(val)
+            while pointer_pop < len_pop and stack and popped[pointer_pop] == stack[-1]:
+                stack.pop()
+                pointer_pop += 1
+
+        return not stack
 
 
 sol = Solution()
-path = "L(ee)))t(()co(de"
+pushed = [0,1]
+popped = [0,1]
 
-result = sol.minRemoveToMakeValid(path)
+result = sol.validateStackSequences(pushed, popped)
 print(result)
