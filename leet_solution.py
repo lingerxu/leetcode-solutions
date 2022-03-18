@@ -1,25 +1,26 @@
-class Solution(object):
-    def validateStackSequences(self, pushed, popped):
-        """
-        :type pushed: List[int]
-        :type popped: List[int]
-        :rtype: bool
-        """
-        len_pop = len(popped)
-        stack = []
-        pointer_pop = 0
-        for val in pushed:
-            stack.append(val)
-            while pointer_pop < len_pop and stack and popped[pointer_pop] == stack[-1]:
-                stack.pop()
-                pointer_pop += 1
+from errno import ENETDOWN
 
-        return not stack
+
+class Solution(object):
+    def removeDuplicateLetters(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        stack = []
+        last_occurance = {c: i for i,c in enumerate(s)}
+
+        for i,c in enumerate(s):
+            if c not in stack:
+                while stack and c < stack[-1] and i < last_occurance[stack[-1]]:
+                    stack.pop()
+                stack.append(c)
+        
+        return "".join(stack)
 
 
 sol = Solution()
-pushed = [0,1]
-popped = [0,1]
+s = "cbacdcbc"
 
-result = sol.validateStackSequences(pushed, popped)
+result = sol.removeDuplicateLetters(s)
 print(result)
