@@ -1,26 +1,33 @@
-from errno import ENETDOWN
-
-
 class Solution(object):
-    def removeDuplicateLetters(self, s):
+    def intersect(self, nums1, nums2):
         """
-        :type s: str
-        :rtype: str
+        :type nums1: List[int]
+        :type nums2: List[int]
+        :rtype: List[int]
         """
-        stack = []
-        last_occurance = {c: i for i,c in enumerate(s)}
+        shared = {}
+        for val in nums1:
+            if val in shared:
+                shared[val] += 1
+            else:
+                shared[val] = 1
 
-        for i,c in enumerate(s):
-            if c not in stack:
-                while stack and c < stack[-1] and i < last_occurance[stack[-1]]:
-                    stack.pop()
-                stack.append(c)
+        result = []
+        for val in nums2:
+            if val in shared and shared[val] > 0:
+                shared[val] -= 1
+                result.append(val)
         
-        return "".join(stack)
+        return result
+
 
 
 sol = Solution()
-s = "cbacdcbc"
+nums1 = [4,9,4]
+nums2 = [9,4,9,8,4]
 
-result = sol.removeDuplicateLetters(s)
+result = sol.intersect(nums1, nums2)
 print(result)
+
+import math
+print(math.sqrt(3))
