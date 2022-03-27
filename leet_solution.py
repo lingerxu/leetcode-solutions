@@ -1,27 +1,42 @@
 class Solution(object):
-    def canCompleteCircuit(self, gas, cost):
+    def kWeakestRows(self, mat, k):
         """
-        :type gas: List[int]
-        :type cost: List[int]
-        :rtype: int
+        :type mat: List[List[int]]
+        :type k: int
+        :rtype: List[int]
         """
-        n = len(gas)
+        # vertical sort
+        # so my sorting logic is to go through 0-nth bit from 0-mth row
+        # to put all rows with 0 before rows with 1 at the ith bit
+        # my initial list would be [0, 1, 2, ..., m]
+        # for every row with 0 at ith bit, move the row index to the front - at the end of all 0s
+        m = len(mat)
+        n = len(mat[0]) # because 2 <= n, m, so no edge cases here
+        result = list(range(m))
+        num_zeroes = 0
+        for colidx in range(0, n):
+            for rowidx in range(num_zeroes, m):
+                if mat[rowidx][colidx] == 0:
+                    # take rowidx out of result and insert it back to result
+                    tmpidx = result[rowidx]
+                    result.remove(tmpidx)
+                    result.insert(num_zeroes, tmpidx)
+                    # sort the mat as well
+                    row = mat.pop(rowidx)
+                    mat.insert(num_zeroes, row)
+                    num_zeroes += 1
 
-        total_tank = 0
-        curr_tank = 0
-        starting_station = 0
-        for i in range(n):
-            total_tank += gas[i] - cost[i]
-            curr_tank += gas[i] - cost[i]
-            if curr_tank < 0:
-                starting_station = i + 1
-                curr_tank = 0
+        return result[:k]
 
-        return starting_station if total_tank >= 0 else -1
+
+        
 
 sol = Solution()
-gas = [1,2,3,4,5]
-cost = [3,4,5,1,2]
+mat = [[1,0,0,0],
+ [1,1,1,1],
+ [1,0,0,0],
+ [1,0,0,0]]
+k = 2
 
-result = sol.canCompleteCircuit(gas, cost)
+result = sol.kWeakestRows(mat, k)
 print(result)
