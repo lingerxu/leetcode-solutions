@@ -33,9 +33,9 @@ def convert_list(input_list):
         new_node = ListNode(val = input_list[i], next = None)
         current_node.next = new_node
         current_node = new_node
-    # tail = current_node
+    tail = current_node
     
-    return head_node
+    return head_node, tail
 
 class Solution(object):
     def split_middle(self, head):
@@ -77,18 +77,52 @@ class Solution(object):
         result = self.merge(left, right)
         return result
     
+    def detectCycle(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        if not head:
+            return None
+        
+        slow = head
+        fast = head
+        is_cycle = False
+        
+        # find the intersect
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+            if slow == fast:
+                is_cycle = True
+                break
+                
+        if not is_cycle:
+            return None
+        
+        # now slow and fast are both at the intersect
+        # next we find the starting point of cycle
+        slow = head
+        while slow != fast:
+            slow = slow.next
+            fast = fast.next
+            
+        return slow
+    
 
         
-# input_list = [1,1,1,2,3]
-# input_head, tail = convert_list(input_list)
-# prettyprint(input_head)
-
-head = convert_list([7, 1, 9, 11])
+input_list = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+head, tail = convert_list(input_list)
 head.prettyprint()
+tail.next = head.next
+
+# head = convert_list([7, 1, 9, 11])
+# head.prettyprint()
 
 sol = Solution()
-result = sol.copyRandomList(head)
+result = sol.detectCycle(head)
 if result:
-    result.prettyprint()
+    print(result.val)
+    # result.prettyprint()
 else:
     print(result)
