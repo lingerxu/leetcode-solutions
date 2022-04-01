@@ -1,42 +1,51 @@
 class Solution(object):
-    def kWeakestRows(self, mat, k):
+    def firstMissingPositive(self, nums):
         """
-        :type mat: List[List[int]]
-        :type k: int
-        :rtype: List[int]
+        :type nums: List[int]
+        :rtype: int
         """
-        # vertical sort
-        # so my sorting logic is to go through 0-nth bit from 0-mth row
-        # to put all rows with 0 before rows with 1 at the ith bit
-        # my initial list would be [0, 1, 2, ..., m]
-        # for every row with 0 at ith bit, move the row index to the front - at the end of all 0s
-        m = len(mat)
-        n = len(mat[0]) # because 2 <= n, m, so no edge cases here
-        result = list(range(m))
-        num_zeroes = 0
-        for colidx in range(0, n):
-            for rowidx in range(num_zeroes, m):
-                if mat[rowidx][colidx] == 0:
-                    # take rowidx out of result and insert it back to result
-                    tmpidx = result[rowidx]
-                    result.remove(tmpidx)
-                    result.insert(num_zeroes, tmpidx)
-                    # sort the mat as well
-                    row = mat.pop(rowidx)
-                    mat.insert(num_zeroes, row)
-                    num_zeroes += 1
-
-        return result[:k]
-
-
+        n = len(nums)
+        
+        # Base case.
+        if 1 not in nums:
+            return 1
+        
+        # Replace negative numbers, zeros,
+        # and numbers larger than n by 1s.
+        # After this convertion nums will contain 
+        # only positive numbers.
+        for i in range(n):
+            if nums[i] <= 0 or nums[i] > n:
+                nums[i] = 1
+        
+        # Use index as a hash key and number sign as a presence detector.
+        # For example, if nums[1] is negative that means that number `1`
+        # is present in the array. 
+        # If nums[2] is positive - number 2 is missing.
+        for i in range(n): 
+            a = abs(nums[i])
+            # If you meet number a in the array - change the sign of a-th element.
+            # Be careful with duplicates : do it only once.
+            if a == n:
+                nums[0] = - abs(nums[0])
+            else:
+                nums[a] = - abs(nums[a])
+            
+        # Now the index of the first positive number 
+        # is equal to first missing positive.
+        print(nums)
+        for i in range(0, n):
+            if nums[i] > 0:
+                print(i)
+                print(nums[i])
+                print(n)
+                return i if i > 0 else n
+            
+        return n + 1
         
 
 sol = Solution()
-mat = [[1,0,0,0],
- [1,1,1,1],
- [1,0,0,0],
- [1,0,0,0]]
-k = 2
+nums = [1,2,3,4,5,6,7,8,9,10,11,12,23,20]
 
-result = sol.kWeakestRows(mat, k)
+result = sol.firstMissingPositive(nums)
 print(result)

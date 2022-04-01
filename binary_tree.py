@@ -74,8 +74,48 @@ class Solution(object):
         if not curr_node.left and not curr_node.right:
             return 0
 
-root = TreeNode(0, TreeNode(3, None), TreeNode(2, None, TreeNode(5, None, None)))
+    def preorderTraversal(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        result = []
+        stack = [] # a queue to store the roots of current level
+        stack.append(root)
+        while stack:
+            curr = stack.pop()
+            if curr:
+                result.append(curr.val)
+                if curr.right:
+                    stack.append(curr.right)
+                if curr.left:
+                    stack.append(curr.left)
+                
+        return result
+
+    
+    def inorderTraversal(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        result = []
+        stack = [] # a queue to store the roots of current level
+        curr = root
+        while curr or stack:
+            while curr:
+                stack.append(curr)
+                curr = curr.left
+            curr = stack.pop()
+            result.append(curr.val)
+            curr = curr.right
+                
+        return result
+        
+
+# root = TreeNode(0, TreeNode(3, None), TreeNode(2, None, TreeNode(5, None, None)))
+root = TreeNode(1, TreeNode(2, TreeNode(4, None, None), TreeNode(5, TreeNode(4, None, None), None)), TreeNode(3, TreeNode(6, None, None), None))
 root.prettyprint()
 sol = Solution()
-result = sol.widthOfBinaryTree(root)
+result = sol.inorderTraversal(root)
 print(result)
