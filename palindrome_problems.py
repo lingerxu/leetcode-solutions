@@ -29,6 +29,12 @@ class Solution(object):
         two = s[:nhalf:-1]
         i = 0
         j = 0
+        counter = 0
+        while i < nhalf and j < nhalf:
+            if one[i] == two[j]:
+                i += 1
+                j += 1
+            elif
 
 sol = Solution()
 s = "abcdeca"
