@@ -1,38 +1,34 @@
 class Solution(object):
-    # def validPalindrome(self, s):
-    #     """
-    #     :type s: str
-    #     :rtype: bool
-    #     """
-    #     left = 0
-    #     right = len(s) - 1
-    #     while left < right:
-    #         if s[left] != s[right]:
-    #             tmp1 = s[left:right]
-    #             tmp2 = s[left+1:right+1]
-    #             return tmp1 == tmp1[::-1] or tmp2 == tmp2[::-1]
-            
-    #         left += 1
-    #         right -= 1
-        
-    #     return True
-    
-    def isValidPalindrome(self, s, k):
+    def nextPermutation(self, nums):
         """
-        :type s: str
-        :type k: int
-        :rtype: bool
+        :type nums: List[int]
+        :rtype: None Do not return anything, modify nums in-place instead.
         """
-        n = len(s)
-        nhalf = n // 2
-        one = s[:nhalf]
-        two = s[:nhalf:-1]
-        i = 0
-        j = 0
+        n = len(nums)
+        i = n - 2
+        # find the first number that is smaller than its right neighbor
+        while i >= 0 and nums[i+1] <= nums[i]:
+            i -= 1
+        # swap the earliest numnber that's smaller with the number at current i
+        if i >= 0:
+            j = n - 1
+            while nums[j] <= nums[i]:
+                j -= 1
+            nums[i], nums[j] = nums[j], nums[i]
+
+        # reserve the sequence after i+1
+        # since we already know that its in descending order from i+1
+        a = i + 1
+        b = n - 1
+        while a < b:
+            nums[a], nums[b] = nums[b], nums[a]
+            a += 1
+            b -= 1
+
+        return nums
 
 sol = Solution()
-s = "abcdeca"
-k = 2
+nums = [1, 2, 3, 5, 4]
 
-result = sol.isValidPalindrome(s, k)
+result = sol.nextPermutation(nums)
 print(result)
