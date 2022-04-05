@@ -1,4 +1,7 @@
 # Definition for singly-linked list and some related functions
+from email.errors import HeaderMissingRequiredValue
+
+
 def prettyprint(input_data):
     # more of a general function to pretty print things
     if isinstance(input_data, ListNode):
@@ -108,21 +111,73 @@ class Solution(object):
             fast = fast.next
             
         return slow
-    
 
+    def swapNodes(self, head, k):
+        """
+        :type head: ListNode
+        :type k: int
+        :rtype: ListNode
+        """
+        # create dummyhead, count steps and length O(N)
+        # so the nodes to be swapped is kth and (n-k+1)th -  here is 1-indexed
+        # again, from the head, with prev, prev-kth.next to (n-k+1)th node, and (n-k)th.next to kth
+        # kth.next, (n-k+1)th.next = (n-k+1)th.next, kth.next
+        dummyhead = ListNode(-1, head)
+        counter = 0
+        curr = head
+        # get kth node with its prev node in this pass too
+        prevk = dummyhead
+        # get the (n-k+1)th node in this pass too
+        prevm = prevk
+        while curr:
+            counter += 1
+            if counter == (k-1):
+                prevk = curr
+            if counter > k:
+                prevm = prevm.next
+            curr = curr.next
+            
+        swapk = prevk.next
+        swapm = prevm.next
+
+        prevk.next, prevm.next = swapm, swapk
+        swapk.next, swapm.next = swapm.next, swapk.next
+
+        return dummyhead.next
+
+
+    def removeNthFromEnd(self, head, n):
+        """
+        :type head: ListNode
+        :type n: int
+        :rtype: ListNode
+        """
+        dummyhead = ListNode(-1, head)
+        curr = head
+        prevn = dummyhead
+        counter = 0
+        while curr:
+            counter += 1
+            if counter > n:
+                prevn = prevn.next
+            curr = curr.next
+
+        prevn.next = prevn.next.next
+
+        return dummyhead.next
         
-input_list = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+input_list = [1]
+n = 1
 head, tail = convert_list(input_list)
 head.prettyprint()
-tail.next = head.next
 
 # head = convert_list([7, 1, 9, 11])
 # head.prettyprint()
 
 sol = Solution()
-result = sol.detectCycle(head)
+result = sol.removeNthFromEnd(head, n)
 if result:
-    print(result.val)
-    # result.prettyprint()
+    # print(result.val)
+    result.prettyprint()
 else:
     print(result)
