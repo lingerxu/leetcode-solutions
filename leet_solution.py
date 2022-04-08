@@ -1,58 +1,73 @@
 class Solution(object):
-    def twoSum(self, numbers, target):
+    def threeSumMulti(self, arr, target):
         """
-        :type numbers: List[int]
+        :type arr: List[int]
         :type target: int
-        :rtype: List[int]
+        :rtype: int
         """
-        # two pointers, from 0, n-1 to inward
-        n = len(nums)
-        left = 0
-        right = n - 1
-        while left < right:
-            tmpsum = nums[left] + nums[right]
-            if tmpsum == target:
-                return [left, right]
-            elif tmpsum < target:
-                left += 1
-            else: # tmpsum > target:
-                right -= 1
+        MOD = 10**9 + 7
+        result = 0
+        arr.sort()
+        n = len(arr)
+        
+        for i in range(n):
+            subt = target - arr[i]
+            j = i + 1
+            k = len(arr) - 1
+            
+            while j < k:
+                if arr[j] + arr[k] < subt:
+                    j += 1
+                elif arr[j] + arr[k] > subt:
+                    k -= 1
+                # when == subt
+                elif arr[j] != arr[k]: 
+                    left = 1
+                    right = 1
+                    while j + 1 < k and arr[j] == arr[j+1]:
+                        left += 1
+                        j += 1
+                    while k - 1 > j and arr[k] == arr[k-1]:
+                        right += 1
+                        k -= 1
+                    result += left * right
+                    result %= MOD
+                    j += 1
+                    k -= 1
+                else:
+                    # M = k - j + 1
+                    # We contributed M * (M-1) / 2 pairs.
+                    result += (k-j+1) * (k-j) / 2
+                    result %= MOD
+                    break
+            
+        return result
 
-    def reverseWords(self, s):
+    def lastStoneWeight(self, stones):
         """
-        :type s: str
-        :rtype: str
+        :type stones: List[int]
+        :rtype: int
         """
-        # n = len(s)
-        # sub_start = 0
-        # sub_end = 0
-        # idx_blank = 0
-        # result = ""
-        # for i in range(n):
-        #     if s[i] == " " or i == n - 1:
-        #         if idx_blank > 0:
-        #             sub_start = idx_blank + 1
-        #         idx_blank = i
-        #         sub_end = idx_blank - 1 if i < n - 1 else i
-        #         # reverse the string between sub_start and sub_end
-        #         # and add to result
-        #         sub_str = ""
-        #         while sub_end >= sub_start:
-        #             sub_str += s[sub_end]
-        #             sub_end -= 1
-        #         if i < n - 1:
-        #             result = result + sub_str + " "
-        #         else:
-        #             result += sub_str
+        # logic is finding the largest two, then 
+        def remove_largest():
+            index_of_largest = stones.index(max(stones))
+            # Swap the stone to be removed with the end.
+            stones[index_of_largest], stones[-1] = stones[-1], stones[index_of_largest]
+            return stones.pop()
 
-        # return result
-        return ' '.join(x[::-1] for x in s.split())
+        while len(stones) > 1:
+            stone1 = remove_largest()
+            stone2 = remove_largest()
+            if stone1 != stone2:
+                stones.append(stone1 - stone2)
+
+        return stones[0] if stones else 0
+
+
 
 
 sol = Solution()
-nums = [2,7,11,15]
-target = 9
-s = "Let's take LeetCode contest"
+stones = [10,4,2,10]
 
-result = sol.reverseWords(s)
+result = sol.lastStoneWeight(stones)
 print(result)
