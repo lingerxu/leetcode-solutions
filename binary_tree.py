@@ -111,6 +111,19 @@ class Solution(object):
             curr = curr.right
                 
         return result
+
+    def postorderTraversal(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        result = []
+        stack = []
+        stack.append(root)
+        while stack:
+            curr = stack.pop()
+            
+        
         
 
 # root = TreeNode(0, TreeNode(3, None), TreeNode(2, None, TreeNode(5, None, None)))

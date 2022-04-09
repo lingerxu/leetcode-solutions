@@ -1,73 +1,33 @@
 class Solution(object):
-    def threeSumMulti(self, arr, target):
+    def checkInclusion(self, s1, s2):
         """
-        :type arr: List[int]
-        :type target: int
-        :rtype: int
+        :type s1: str
+        :type s2: str
+        :rtype: bool
         """
-        MOD = 10**9 + 7
-        result = 0
-        arr.sort()
-        n = len(arr)
+        from collections import defaultdict
+        # the logic is to find a consecutive substring in s2 that contains all the characters in s1
+        # the brute force solution is to go through s2, check every n1 length of substring, 
+        # edge case; n2 < n2, return false
+        n1 = len(s1)
+        n2 = len(s2)
+        if n2 < n1:
+            return False
+        i = 0
+        j = 0
+
+        # creat dict of s1
+        dict1 = defaultdict(lambda:0)
+        for i, val in enumerate(s1):
+            dict1[val] += 1
         
-        for i in range(n):
-            subt = target - arr[i]
-            j = i + 1
-            k = len(arr) - 1
-            
-            while j < k:
-                if arr[j] + arr[k] < subt:
-                    j += 1
-                elif arr[j] + arr[k] > subt:
-                    k -= 1
-                # when == subt
-                elif arr[j] != arr[k]: 
-                    left = 1
-                    right = 1
-                    while j + 1 < k and arr[j] == arr[j+1]:
-                        left += 1
-                        j += 1
-                    while k - 1 > j and arr[k] == arr[k-1]:
-                        right += 1
-                        k -= 1
-                    result += left * right
-                    result %= MOD
-                    j += 1
-                    k -= 1
-                else:
-                    # M = k - j + 1
-                    # We contributed M * (M-1) / 2 pairs.
-                    result += (k-j+1) * (k-j) / 2
-                    result %= MOD
-                    break
-            
-        return result
-
-    def lastStoneWeight(self, stones):
-        """
-        :type stones: List[int]
-        :rtype: int
-        """
-        # logic is finding the largest two, then 
-        def remove_largest():
-            index_of_largest = stones.index(max(stones))
-            # Swap the stone to be removed with the end.
-            stones[index_of_largest], stones[-1] = stones[-1], stones[index_of_largest]
-            return stones.pop()
-
-        while len(stones) > 1:
-            stone1 = remove_largest()
-            stone2 = remove_largest()
-            if stone1 != stone2:
-                stones.append(stone1 - stone2)
-
-        return stones[0] if stones else 0
-
-
+        for key in dict1:
+            print(f"{key}: {dict1[key]}")
 
 
 sol = Solution()
-stones = [10,4,2,10]
+s1 = "ab"
+s2 = "eidboaoo"
 
-result = sol.lastStoneWeight(stones)
+result = sol.checkInclusion(s1, s2)
 print(result)
