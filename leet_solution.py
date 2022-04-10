@@ -1,33 +1,59 @@
+import collections
+import heapq
+import random
+
 class Solution(object):
-    def checkInclusion(self, s1, s2):
+    def topKFrequent(self, nums, k):
         """
-        :type s1: str
-        :type s2: str
-        :rtype: bool
+        :type nums: List[int]
+        :type k: int
+        :rtype: List[int]
         """
-        from collections import defaultdict
-        # the logic is to find a consecutive substring in s2 that contains all the characters in s1
-        # the brute force solution is to go through s2, check every n1 length of substring, 
-        # edge case; n2 < n2, return false
-        n1 = len(s1)
-        n2 = len(s2)
-        if n2 < n1:
-            return False
-        i = 0
-        j = 0
+        # the logic is to first build a frequency map for nums
+        # then maintain a heap of frequencies with k elements
+        n = len(nums)
+        if k == n:
+            return nums
 
-        # creat dict of s1
-        dict1 = defaultdict(lambda:0)
-        for i, val in enumerate(s1):
-            dict1[val] += 1
-        
-        for key in dict1:
-            print(f"{key}: {dict1[key]}")
+        dict_freq = collections.Counter(nums)
+        unique = list(dict_freq.keys())
 
+        def partition(left, right, pivot):
+            pivot_freq = dict_freq[unique[pivot]]
+            unique[pivot], unique[right] = unique[right], unique[pivot]
+
+            store_index = left
+            for i in range(left, right):
+                if dict_freq[unique[i]] < pivot_freq:
+                    unique[store_index], unique[i] = unique[i], unique[store_index]
+                    store_index += 1
+            
+            unique[right], unique[store_index] = unique[store_index], unique[right]
+
+            return store_index
+
+        # Sort a list within left..right till kth less frequent element takes its place. 
+        def quickselect(left, right, k_smallest):
+            if left == right:
+                return # no sorting needed
+            
+            pivot = random.randint(left, right)
+            pivot = partition(left, right, pivot)
+
+            if k_smallest == pivot:
+                return
+            elif k_smallest < pivot:
+                quickselect(left, pivot-1, k_smallest)
+            else:
+                quickselect(pivot+1, right, k_smallest)
+
+        n = len(unique)  
+        quickselect(0, n - 1, n - k)
+        return unique[n-k:]
 
 sol = Solution()
-s1 = "ab"
-s2 = "eidboaoo"
+nums = [1,1,1,2,2,3]
+k = 2
 
-result = sol.checkInclusion(s1, s2)
+result = sol.topKFrequent(nums, k)
 print(result)
