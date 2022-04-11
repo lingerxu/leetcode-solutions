@@ -1,6 +1,3 @@
-from platform import node
-
-
 class TreeNode(object):
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -93,7 +90,26 @@ class Solution(object):
                 
         return result
 
-    
+    def preorderTraversalMorris(self, root):
+        result = []
+        curr = root
+        while curr:
+            if not curr.left:
+                result.append(curr.val)
+                curr = curr.right
+            else:
+                prev = curr.left
+                while prev.right and prev.right != curr:
+                    prev = prev.right
+                if not prev.right:
+                    result.append(curr.val)
+                    prev.right = curr
+                    curr = curr.left
+                else:
+                    prev.right = None
+                    curr = curr.right
+        return result
+
     def inorderTraversal(self, root):
         """
         :type root: TreeNode
@@ -112,23 +128,94 @@ class Solution(object):
                 
         return result
 
+    def inorderTraversalMorris(self, root):
+        result = []
+        curr = root
+        while curr:
+            if not curr.left:
+                result.append(curr.val)
+                curr = curr.right
+            else:
+                prev = curr.left
+                while prev.right and prev.right != curr:
+                    prev = prev.right
+                if not prev.right:
+                    prev.right = curr
+                    curr = curr.left
+                else:
+                    prev.right = None
+                    result.append(curr.val)
+                    curr = curr.right
+        return result
+
     def postorderTraversal(self, root):
         """
         :type root: TreeNode
         :rtype: List[int]
         """
+        ##### use visited flag ####
+        # result = []
+        # stack = [(root, False)]
+        # while stack:
+        #     curr, visited = stack.pop()
+        #     if curr:
+        #         if visited:
+        #             result.append(curr.val)
+        #         else:
+        #             # postorder append to stack
+        #             stack.append((curr, True))
+        #             if curr.right:
+        #                 stack.append((curr.right, False))
+        #             if curr.left:
+        #                 stack.append((curr.left, False))
+
+        # return result
+        #### the reverse preorder method ####
         result = []
-        stack = []
-        stack.append(root)
+        stack = [root] # a queue to store the roots of current level
         while stack:
             curr = stack.pop()
-            
+            if curr:
+                result.append(curr.val)
+                if curr.left:
+                    stack.append(curr.left)
+                if curr.right:
+                    stack.append(curr.right)
+                
+        return result[::-1]
+
+    def postorderTraversalMorris(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        result = []
         
+        dummyhead = TreeNode(-1, None, None)
+        curr = dummyhead
+        curr.left = root
+        while curr:
+            if not curr.left:
+                curr = curr.right
+            else:
+                prev = curr.left
+                while prev.right and prev.right != curr:
+                    prev = prev.right
+                if not prev.right:
+                    prev.right = curr
+                    curr = curr.left
+                else:
+                    prev = curr.left
+                    counter = 1
+                    while prev.right and prev.right != curr:
+                        result.append(prev.val)
+                        prev = prev.right
+                        counter += 1
         
 
 # root = TreeNode(0, TreeNode(3, None), TreeNode(2, None, TreeNode(5, None, None)))
 root = TreeNode(1, TreeNode(2, TreeNode(4, None, None), TreeNode(5, TreeNode(4, None, None), None)), TreeNode(3, TreeNode(6, None, None), None))
 root.prettyprint()
 sol = Solution()
-result = sol.inorderTraversal(root)
+result = sol.preorderTraversalMorris(root)
 print(result)
