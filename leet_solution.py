@@ -1,26 +1,31 @@
-class Solution(object):
-    def calPoints(self, ops):
-        """
-        :type ops: List[str]
-        :rtype: int
-        """
-        stack = []
-        for val in ops:
-            print(val)
-            if val == "C":
-                stack.pop()
-            elif val == "D":
-                stack.append(stack[-1] * 2)
-            elif val == "+":
-                stack.append(stack[-1] + stack[-2])
-            else:
-                stack.append(int(val))
-            print(stack)
+import numpy as np
 
-        return sum(stack)
+class Solution(object):
+    def shiftGrid(self, grid, k):
+        """
+        :type grid: List[List[int]]
+        :type k: int
+        :rtype: List[List[int]]
+        """
+        m = len(grid) # how many rows
+        n = len(grid[0]) # how many cols and n >= 1
+        k = k % (m * n)
+        grid_size = m * n
+
+        onelist = []
+        for row in grid:
+            onelist = onelist + row
+
+        onelist = onelist[grid_size-k:] + onelist[:grid_size-k]
+
+        result = []
+        for rowidx in range(m):
+            result.append(onelist[rowidx*n:rowidx*n+n])
+
+        return result
 
 sol = Solution()
-ops = ["5","-2","4","C","D","9","+","+"]
+grid = [[3,8,1,9],[19,7,2,5],[4,6,11,10],[12,0,21,13]]
+k = 4
 
-result = sol.calPoints(ops)
-print(result)
+result = sol.shiftGrid(grid, k)

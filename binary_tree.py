@@ -1,3 +1,6 @@
+from collections import deque
+
+
 class TreeNode(object):
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -10,7 +13,7 @@ class TreeNode(object):
             return None
         
         treequeue = []
-        treequeue.append((root, 1))
+        treequeue.append((root, 1)) # col index
         while treequeue:
             # go through current level first
             level_length = len(treequeue)
@@ -66,10 +69,35 @@ class Solution(object):
         
         return max_width
 
-    def dfs(self):
-        curr_node = self
-        if not curr_node.left and not curr_node.right:
+    def maxDepth(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[int]]
+        """
+        if not root:
             return 0
+
+        level = 0
+        treequeue = deque([root])
+
+        while treequeue:
+            # go through current level first
+            level_length = len(treequeue)
+            
+            for _ in range(level_length):
+                # pop the first node from tree queue
+                curr = treequeue.popleft()
+
+                #prepare for the next level
+                if curr.left:
+                    treequeue.append(curr.left)
+                if curr.right:
+                    treequeue.append(curr.right)
+
+            # go to next level
+            level += 1
+            
+        return level
 
     def preorderTraversal(self, root):
         """
@@ -211,11 +239,68 @@ class Solution(object):
                         result.append(prev.val)
                         prev = prev.right
                         counter += 1
-        
+        return result
+    
+    def levelOrder(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[int]]
+        """
+        levels = []
+        if not root:
+            return levels
 
-# root = TreeNode(0, TreeNode(3, None), TreeNode(2, None, TreeNode(5, None, None)))
+        level = 0
+        treequeue = [root]
+
+        while treequeue:
+            levels.append([])
+            # go through current level first
+            level_length = len(treequeue)
+            
+            for _ in range(level_length):
+                # pop the first node from tree queue
+                curr = treequeue.pop(0)
+                levels[level].append(curr.val)
+                #prepare for the next level
+                if curr.left:
+                    treequeue.append(curr.left)
+                if curr.right:
+                    treequeue.append(curr.right)
+
+            # go to next level
+            level += 1
+
+        return levels
+
+    def isSymmetric(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        treequeue = deque([root])
+        is_symmetric = True
+        while treequeue:
+            len_level = len(treequeue)
+            curr_level = []
+            for _ in range(len_level):
+                curr = treequeue.popleft()
+                if curr:
+                    curr_level.append(curr.val)
+                    treequeue.append(curr.left)
+                    treequeue.append(curr.right)
+                else: # could be None o!
+                    curr_level.append(-1)
+
+            if curr_level != curr_level[::-1]:
+                return False
+
+        return is_symmetric
+
 root = TreeNode(1, TreeNode(2, TreeNode(4, None, None), TreeNode(5, TreeNode(4, None, None), None)), TreeNode(3, TreeNode(6, None, None), None))
+root = TreeNode(1, TreeNode(2, None, TreeNode(3)), TreeNode(2, None, TreeNode(3)))
+
 root.prettyprint()
 sol = Solution()
-result = sol.preorderTraversalMorris(root)
+result = sol.isSymmetric(root)
 print(result)
