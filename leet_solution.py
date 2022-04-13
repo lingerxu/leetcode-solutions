@@ -1,31 +1,50 @@
 import numpy as np
 
 class Solution(object):
-    def shiftGrid(self, grid, k):
+    def generateMatrix(self, n):
         """
-        :type grid: List[List[int]]
-        :type k: int
+        :type n: int
         :rtype: List[List[int]]
         """
-        m = len(grid) # how many rows
-        n = len(grid[0]) # how many cols and n >= 1
-        k = k % (m * n)
-        grid_size = m * n
-
-        onelist = []
-        for row in grid:
-            onelist = onelist + row
-
-        onelist = onelist[grid_size-k:] + onelist[:grid_size-k]
-
         result = []
-        for rowidx in range(m):
-            result.append(onelist[rowidx*n:rowidx*n+n])
+        for _ in range(n):
+            result.append([0] * n)
+
+        def fill_circle(val, start, n):
+            i = start
+            j = start
+            print("--------------")
+            print("*")
+            for k in range(j, j+n):
+                result[i][k] = val
+                val += 1
+                print(result)
+            print("*")
+            for k in range(i+1, i+n):
+                result[k][j+n-1] = val
+                val += 1
+            print(result)
+            for k in reversed(range(j, j+n - 1)):
+                result[i+n-1][k] = val
+                val += 1
+            print(result)
+            for k in reversed(range(i+1, i+n-1)):
+                result[k][j] = val
+                val += 1
+            print(result)
+            print("--------------")
+            return val
+
+        val = 1
+        start = 0
+        while n > 0:
+            next_val = fill_circle(val, start, n)
+            val = next_val
+            n -= 2
+            start += 1
 
         return result
 
 sol = Solution()
-grid = [[3,8,1,9],[19,7,2,5],[4,6,11,10],[12,0,21,13]]
-k = 4
-
-result = sol.shiftGrid(grid, k)
+result = sol.generateMatrix(4)
+print(result)

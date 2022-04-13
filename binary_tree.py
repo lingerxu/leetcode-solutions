@@ -1,4 +1,8 @@
 from collections import deque
+import math
+from platform import node
+
+from numpy import insert
 
 
 class TreeNode(object):
@@ -290,17 +294,189 @@ class Solution(object):
                     treequeue.append(curr.left)
                     treequeue.append(curr.right)
                 else: # could be None o!
-                    curr_level.append(-1)
+                    curr_level.append(-101)
 
             if curr_level != curr_level[::-1]:
                 return False
 
         return is_symmetric
 
-root = TreeNode(1, TreeNode(2, TreeNode(4, None, None), TreeNode(5, TreeNode(4, None, None), None)), TreeNode(3, TreeNode(6, None, None), None))
-root = TreeNode(1, TreeNode(2, None, TreeNode(3)), TreeNode(2, None, TreeNode(3)))
+    def invertTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        stack = [root]
+        while stack:
+            curr = stack.pop()
+            if curr:
+                curr.left, curr.right = curr.right, curr.left
+                if curr.left:
+                    stack.append(curr.left)
+                if curr.right:
+                    stack.append(curr.right)
+        return root
+
+    def hasPathSum(self, root, targetSum):
+        """
+        :type root: TreeNode
+        :type targetSum: int
+        :rtype: bool
+        """
+        if not root:
+            return False
+
+        stack = [(root, targetSum - root.val)]
+        while stack:
+            curr, curr_sum = stack.pop()
+            if not curr.left and not curr.right and curr_sum == 0:
+                return True
+            if curr.right:
+                stack.append((curr.right, curr_sum - curr.right.val))
+            if curr.left:
+                stack.append((curr.left, curr_sum - curr.left.val))
+        
+        return False
+
+    def searchBST(self, root, val):
+        """
+        :type root: TreeNode
+        :type val: int
+        :rtype: TreeNode
+        """
+        # if it is sorted, then just two lines of code:
+        # while root and root.val != val:
+        #     root = root.left if root.val < val else root.right
+        # return root 
+        if not root:
+            return None
+        stack = [root]
+        while stack:
+            curr = stack.pop()
+            if curr.val == val:
+                return curr
+            if curr.left:
+                stack.append(curr.left)
+            if curr.right:
+                stack.append(curr.right)
+        return None
+
+    def insertIntoBST(self, root, val):
+        """
+        :type root: TreeNode
+        :type val: int
+        :rtype: TreeNode
+        """
+        if not root:
+            return TreeNode(val)
+
+        curr = root
+        while curr:
+            prev = curr
+            if val > curr.val:
+                curr = curr.right
+            else: # smaller
+                curr = curr.left
+
+        if val < prev.val:
+            prev.left = TreeNode(val)
+        else:
+            prev.right = TreeNode(val)
+
+        return root
+
+    def isValidBST(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        stack = []
+        prev = -2**31-1
+        
+        while stack or root:
+            while root:
+                stack.append(root)
+                root = root.left
+                
+            root = stack.pop()
+            
+            if root.val <= prev:
+                return False
+
+            prev = root.val
+            root = root.right
+        
+        return True
+
+    def findTarget(self, root, k):
+        """
+        :type root: TreeNode
+        :type k: int
+        :rtype: bool
+        """
+        nodeset = set()
+        queue = deque([root])
+        while queue:
+            curr = queue.popleft()
+            if (k - curr.val) in nodeset:
+                return True
+            nodeset.add(curr.val)
+            if curr.right:
+                queue.append(curr.right)
+            if curr.left:
+                queue.append(curr.left)
+
+        return False
+
+    def lowestCommonAncestor(self, root, p, q):
+        """
+        :type root: TreeNode
+        :type p: TreeNode
+        :type q: TreeNode
+        :rtype: TreeNode
+        """
+        curr = root
+        while curr:
+            if p.val > curr.val and q.val > curr.val:
+                curr = curr.right
+            elif p.val < curr.val and q.val < curr.val:
+                curr = curr.left
+            else:
+                return curr
+                
+        # # establish a set of nodes travelled to reach p
+        # stackp = []
+        # curr = root
+        # while curr and curr.val != p.val:
+        #     stackp.append(curr)
+        #     if p.val < curr.val:
+        #         curr = curr.left
+        #     else:
+        #         curr = curr.right
+        
+        # # go through each node is see if there is q with bts range guide
+        # # go from low to high with stack FILO
+        # while stackp:
+        #     subroot = stackp.pop()
+        #     curr = subroot
+        #     while curr and curr.val != q.val:
+        #         curr = curr.left if q.val < curr.val else curr.right
+        #     if curr: # meaning search success
+        #         return subroot
+        #     # else it means that this subtree is exhausted but q is not there
+        
+        # return None # this should not happen!
+
+# root = TreeNode(1, TreeNode(2, TreeNode(4, None, None), TreeNode(5, TreeNode(4, None, None), None)), TreeNode(3, TreeNode(6, None, None), None))
+root = TreeNode(6, TreeNode(2, TreeNode(0), TreeNode(4, TreeNode(3), TreeNode(5))), TreeNode(8, TreeNode(7), TreeNode(9)))
+# root = TreeNode(2, TreeNode(1), TreeNode(3))
 
 root.prettyprint()
 sol = Solution()
-result = sol.isSymmetric(root)
-print(result)
+p = TreeNode(4)
+q = TreeNode(2)
+result = sol.lowestCommonAncestor(root, p, q)
+if isinstance(result, TreeNode):
+    result.prettyprint()
+else:
+    print(result)
