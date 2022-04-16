@@ -13,26 +13,18 @@ class Solution(object):
         def fill_circle(val, start, n):
             i = start
             j = start
-            print("--------------")
-            print("*")
             for k in range(j, j+n):
                 result[i][k] = val
                 val += 1
-                print(result)
-            print("*")
             for k in range(i+1, i+n):
                 result[k][j+n-1] = val
                 val += 1
-            print(result)
             for k in reversed(range(j, j+n - 1)):
                 result[i+n-1][k] = val
                 val += 1
-            print(result)
             for k in reversed(range(i+1, i+n-1)):
                 result[k][j] = val
                 val += 1
-            print(result)
-            print("--------------")
             return val
 
         val = 1

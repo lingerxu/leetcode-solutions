@@ -435,6 +435,33 @@ class Solution(object):
         :type q: TreeNode
         :rtype: TreeNode
         """
+        stack = [root]
+        parent_dict = {root: None}
+        while p not in parent_dict or q not in parent_dict:
+            curr = stack.pop()
+            if curr.left:
+                parent_dict[curr.left] = curr
+                stack.append(curr.left)
+            if curr.right:
+                parent_dict[curr.right] = curr
+                stack.append(curr.right)
+        ancestors = set()
+        while p:
+            ancestors.add(p)
+            p = parent_dict[p]
+        while q not in ancestors:
+            q = parent_dict[q]
+        return q
+
+        
+
+    def lowestCommonAncestorBTS(self, root, p, q):
+        """
+        :type root: TreeNode
+        :type p: TreeNode
+        :type q: TreeNode
+        :rtype: TreeNode
+        """
         curr = root
         while curr:
             if p.val > curr.val and q.val > curr.val:
@@ -443,38 +470,55 @@ class Solution(object):
                 curr = curr.left
             else:
                 return curr
+
+    def trimBST(self, root, low, high):
+        """
+        :type root: TreeNode
+        :type low: int
+        :type high: int
+        :rtype: TreeNode
+        """
+        # go through all notes, check value boundary
+        # because it is bts, it is sorted, so conditions will be
+        # < low; > low & < high; > high
+        # if < low, then, the node as well as its left side should be trimed
+        # parent.left = curr.right
+        # if within range, then search left and right sub-trees
+        # if > high, parent.right = curr.left
+        # edge case check: at least one node, all vals >= 0, sorted, unique bts
+        dummyhead = TreeNode(-1, None, root)
+        stack = [(root, dummyhead)]
+        while stack:
+            curr, parent = stack.pop()
+            if curr.val < low: # need to trim curr and all its left nodes
+                if parent.val > curr.val:
+                    parent.left = curr.right
+                else:
+                    parent.right = curr.right
+                if curr.right:
+                    stack.append((curr.right, parent))
+            elif curr.val > high: # need to trim curr and all its right nodes
+                if parent.val < curr.val:
+                    parent.right = curr.left
+                else:
+                    parent.left = curr.left
+                if curr.left:
+                    stack.append((curr.left, parent))
+            else:
+                if curr.right:
+                    stack.append((curr.right, curr))
+                if curr.left:
+                    stack.append((curr.left, curr))
                 
-        # # establish a set of nodes travelled to reach p
-        # stackp = []
-        # curr = root
-        # while curr and curr.val != p.val:
-        #     stackp.append(curr)
-        #     if p.val < curr.val:
-        #         curr = curr.left
-        #     else:
-        #         curr = curr.right
-        
-        # # go through each node is see if there is q with bts range guide
-        # # go from low to high with stack FILO
-        # while stackp:
-        #     subroot = stackp.pop()
-        #     curr = subroot
-        #     while curr and curr.val != q.val:
-        #         curr = curr.left if q.val < curr.val else curr.right
-        #     if curr: # meaning search success
-        #         return subroot
-        #     # else it means that this subtree is exhausted but q is not there
-        
-        # return None # this should not happen!
+        return dummyhead.right
 
 # root = TreeNode(1, TreeNode(2, TreeNode(4, None, None), TreeNode(5, TreeNode(4, None, None), None)), TreeNode(3, TreeNode(6, None, None), None))
-root = TreeNode(6, TreeNode(2, TreeNode(0), TreeNode(4, TreeNode(3), TreeNode(5))), TreeNode(8, TreeNode(7), TreeNode(9)))
-# root = TreeNode(2, TreeNode(1), TreeNode(3))
-
+# root = TreeNode(6, TreeNode(2, TreeNode(0), TreeNode(4, TreeNode(3), TreeNode(5))), TreeNode(8, TreeNode(7), TreeNode(9)))
+p = TreeNode(1)
+q = TreeNode(2, p)
+root = TreeNode(3, TreeNode(0, None, q), TreeNode(4))
 root.prettyprint()
 sol = Solution()
-p = TreeNode(4)
-q = TreeNode(2)
 result = sol.lowestCommonAncestor(root, p, q)
 if isinstance(result, TreeNode):
     result.prettyprint()
