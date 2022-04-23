@@ -1,42 +1,52 @@
 import numpy as np
+import math
 
 class Solution(object):
-    def generateMatrix(self, n):
+    def findMedianSortedArrays(self, nums1, nums2):
         """
-        :type n: int
-        :rtype: List[List[int]]
+        :type nums1: List[int]
+        :type nums2: List[int]
+        :rtype: float
         """
-        result = []
-        for _ in range(n):
-            result.append([0] * n)
+        MIN_INT = -10**6 - 1
+        MAX_INT = 10**6 + 1
 
-        def fill_circle(val, start, n):
-            i = start
-            j = start
-            for k in range(j, j+n):
-                result[i][k] = val
-                val += 1
-            for k in range(i+1, i+n):
-                result[k][j+n-1] = val
-                val += 1
-            for k in reversed(range(j, j+n - 1)):
-                result[i+n-1][k] = val
-                val += 1
-            for k in reversed(range(i+1, i+n-1)):
-                result[k][j] = val
-                val += 1
-            return val
+        n1 = len(nums1)
+        n2 = len(nums2)
+        # it is more efficient to cut from the shorter array
+        # since high won't be larger than shorter len * 2
+        if n1 > n2:
+            nums1, nums2 = nums2, nums1
+            n1, n2 = n2, n1
+        
+        low = 0
+        high = n1 * 2
+        while low <= high:8
+            print("---------------------")
+            print(f"low:{low}, high:{high}")
+            mid1 = low + (high - low) // 2
+            mid2 = n1 + n2 - mid1 # calculate cut position based on the shorter array
+            print(f"mid1:{mid1}, mid2:{mid2}")
 
-        val = 1
-        start = 0
-        while n > 0:
-            next_val = fill_circle(val, start, n)
-            val = next_val
-            n -= 2
-            start += 1
+            L1 = nums1[(mid1 - 1) // 2] if mid1 > 0 else MIN_INT
+            L2 = nums2[(mid2 - 1) // 2] if mid2 > 0 else MIN_INT
+            R1 = nums1[mid1 // 2] if mid1 < n1 * 2 else MAX_INT
+            R2 = nums1[mid2 // 2] if mid2 < n1 * 2 else MAX_INT
+            print(f"L1:{L1}, L2:{L2}, R1:{R1}, R2:{R2}")
 
-        return result
+            if L1 > R2:
+                high = mid1 - 1
+            elif L2 > R1:
+                low = mid1 + 1
+            else:
+                return (max(L1, L2) + min(R1, R2) / 2)
+            
+        return None # should not happen
 
 sol = Solution()
-result = sol.generateMatrix(4)
+# nums1 = [1,3]
+# nums2 = [2]
+nums1 = [1, 3, 8, 9, 15]
+nums2 = [7, 11, 18, 19, 21, 25]
+result = sol.findMedianSortedArrays(nums1, nums2)
 print(result)

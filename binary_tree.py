@@ -48,6 +48,36 @@ class TreeNode(object):
                     print(f"-[]-", end="")
             print("")
 
+class BSTIterator(object):
+    def __init__(self, root):
+        """
+        :type root: TreeNode
+        """
+        self.curr = root 
+        self.stack = []
+
+    def next(self):
+        """
+        :rtype: int
+        """
+        if self.curr or self.stack:
+            while self.curr:
+                self.stack.append(self.curr)
+                self.curr = self.curr.left
+            self.curr = self.stack.pop()
+            nextval = self.curr.val
+            self.curr = self.curr.right
+            return nextval
+
+    def hasNext(self):
+        """
+        :rtype: bool
+        """
+        if self.stack or self.curr:
+            return True
+        else:
+            return False
+
 class Solution(object):
     def widthOfBinaryTree(self, root):
         if not root:
@@ -453,8 +483,6 @@ class Solution(object):
             q = parent_dict[q]
         return q
 
-        
-
     def lowestCommonAncestorBTS(self, root, p, q):
         """
         :type root: TreeNode
@@ -512,14 +540,97 @@ class Solution(object):
                 
         return dummyhead.right
 
+    def increasingBST(self, root):
+        """
+        :type root: TreeNode
+        :rtype: TreeNode
+        """
+        dummyhead = TreeNode(-1, None, root)
+        curr = root
+        prev = dummyhead
+        stack = []
+        while curr or stack:
+            while curr:
+                stack.append(curr)
+                curr = curr.left
+            curr = stack.pop()
+            prev.right = curr
+            curr.left = None
+            prev = curr
+            curr = curr.right
+        
+        return dummyhead.right
+
+    def kthSmallest(self, root, k):
+        """
+        :type root: TreeNode
+        :type k: int
+        :rtype: int
+        """
+        stack = []
+        curr = root
+        # result = []
+        counter = k
+        while curr or stack:
+            while curr:
+                stack.append(curr)
+                curr = curr.left
+            curr = stack.pop()
+            counter -= 1
+            if counter < 1:
+                return curr.val
+            curr = curr.right
+
+        return None # should not happen
+
+    def recoverTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: None Do not return anything, modify root in-place instead.
+        """
+        # 1. inorder traversal find the node that needs to swapped, 2. swap values
+        stack = []
+        prev = None
+        curr = root
+        one = two = None
+        while curr or stack:
+            while curr:
+                stack.append(curr)
+                curr = curr.left
+            curr = stack.pop()
+            if prev and curr.val < prev.val:
+                one = curr
+                if not two:
+                    two = prev
+                else:
+                    break
+            prev = curr
+            curr = curr.right
+        
+        one.val, two.val = two.val, one.val
+
+        return root
+
 # root = TreeNode(1, TreeNode(2, TreeNode(4, None, None), TreeNode(5, TreeNode(4, None, None), None)), TreeNode(3, TreeNode(6, None, None), None))
-# root = TreeNode(6, TreeNode(2, TreeNode(0), TreeNode(4, TreeNode(3), TreeNode(5))), TreeNode(8, TreeNode(7), TreeNode(9)))
-p = TreeNode(1)
-q = TreeNode(2, p)
-root = TreeNode(3, TreeNode(0, None, q), TreeNode(4))
+# root = TreeNode(6, TreeNode(2, TreeNode(9), TreeNode(4, TreeNode(3), TreeNode(5))), TreeNode(8, TreeNode(7), TreeNode(0)))
+root = TreeNode(7, TreeNode(3), TreeNode(15, TreeNode(9), TreeNode(20)))
+# p = TreeNode(1)
+# q = TreeNode(2, p)
+# root = TreeNode(3, TreeNode(0, None, q), TreeNode(4))
+# root = TreeNode(3, TreeNode(1), TreeNode(4, TreeNode(2)))
 root.prettyprint()
 sol = Solution()
-result = sol.lowestCommonAncestor(root, p, q)
+bSTIterator = BSTIterator(root)
+result = bSTIterator.next()
+result = bSTIterator.next()
+result = bSTIterator.hasNext()
+result = bSTIterator.next()
+result = bSTIterator.hasNext()
+result = bSTIterator.next()
+result = bSTIterator.hasNext()
+result = bSTIterator.next()
+result = bSTIterator.hasNext()
+# result = sol.recoverTree(root)
 if isinstance(result, TreeNode):
     result.prettyprint()
 else:
