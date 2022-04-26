@@ -21,7 +21,7 @@ class Solution(object):
         
         low = 0
         high = n1 * 2
-        while low <= high:8
+        while low <= high:
             print("---------------------")
             print(f"low:{low}, high:{high}")
             mid1 = low + (high - low) // 2
@@ -42,6 +42,8 @@ class Solution(object):
                 return (max(L1, L2) + min(R1, R2) / 2)
             
         return None # should not happen
+
+
 
 sol = Solution()
 # nums1 = [1,3]
