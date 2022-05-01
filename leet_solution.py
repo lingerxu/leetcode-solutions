@@ -44,11 +44,10 @@ class Solution(object):
         return None # should not happen
 
 
-
 sol = Solution()
 # nums1 = [1,3]
 # nums2 = [2]
 nums1 = [1, 3, 8, 9, 15]
 nums2 = [7, 11, 18, 19, 21, 25]
-result = sol.findMedianSortedArrays(nums1, nums2)
+result = sol.minimumEffortPath(heights)
 print(result)

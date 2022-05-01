@@ -48,6 +48,19 @@ class TreeNode(object):
                     print(f"-[]-", end="")
             print("")
 
+"""
+root = TreeNode(7, TreeNode(3), TreeNode(15, TreeNode(9), TreeNode(20)))
+bSTIterator = BSTIterator(root)
+result = bSTIterator.next()
+result = bSTIterator.next()
+result = bSTIterator.hasNext()
+result = bSTIterator.next()
+result = bSTIterator.hasNext()
+result = bSTIterator.next()
+result = bSTIterator.hasNext()
+result = bSTIterator.next()
+result = bSTIterator.hasNext()
+"""
 class BSTIterator(object):
     def __init__(self, root):
         """
@@ -611,26 +624,58 @@ class Solution(object):
 
         return root
 
-# root = TreeNode(1, TreeNode(2, TreeNode(4, None, None), TreeNode(5, TreeNode(4, None, None), None)), TreeNode(3, TreeNode(6, None, None), None))
-# root = TreeNode(6, TreeNode(2, TreeNode(9), TreeNode(4, TreeNode(3), TreeNode(5))), TreeNode(8, TreeNode(7), TreeNode(0)))
-root = TreeNode(7, TreeNode(3), TreeNode(15, TreeNode(9), TreeNode(20)))
+    # inorder traversal successor
+    def successor(self, root):
+        root = root.right
+        while root.left:
+            root = root.left
+        return root.val
+    
+    # inorder traversal predecessor
+    def predecessor(self, root):
+        root = root.left
+        while root.right:
+            root = root.right
+        return root.val
+
+    def deleteNode(self, root, key):
+        """
+        :type root: TreeNode
+        :type key: int
+        :rtype: TreeNode
+        """
+        if not root:
+            return None
+        
+        if key > root.val:
+            root.right = self.deleteNode(root.right, key)
+        elif key < root.val:
+            root.left = self.deleteNode(root.left, key)
+        else: # found key
+            # the node is a leaf
+            if not (root.left or root.right):
+                root = None
+            # the node is not a leaf and has a right child
+            elif root.right:
+                root.val = self.successor(root)
+                root.right = self.deleteNode(root.right, root.val)
+            # the node is not a leaf, has no right child, and has a left child    
+            else:
+                root.val = self.predecessor(root)
+                root.left = self.deleteNode(root.left, root.val)
+            
+        return root
+
+root = TreeNode(1, TreeNode(2, TreeNode(4, None, None), TreeNode(5, TreeNode(4, None, None), None)), TreeNode(3, TreeNode(6, None, None), None))
+root = TreeNode(6, TreeNode(2, TreeNode(0), TreeNode(4, TreeNode(3), TreeNode(5))), TreeNode(8, TreeNode(7), TreeNode(9)))
+
 # p = TreeNode(1)
 # q = TreeNode(2, p)
 # root = TreeNode(3, TreeNode(0, None, q), TreeNode(4))
 # root = TreeNode(3, TreeNode(1), TreeNode(4, TreeNode(2)))
 root.prettyprint()
 sol = Solution()
-bSTIterator = BSTIterator(root)
-result = bSTIterator.next()
-result = bSTIterator.next()
-result = bSTIterator.hasNext()
-result = bSTIterator.next()
-result = bSTIterator.hasNext()
-result = bSTIterator.next()
-result = bSTIterator.hasNext()
-result = bSTIterator.next()
-result = bSTIterator.hasNext()
-# result = sol.recoverTree(root)
+result = sol.deleteNode(root, 8)
 if isinstance(result, TreeNode):
     result.prettyprint()
 else:
