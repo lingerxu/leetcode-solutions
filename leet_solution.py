@@ -1,4 +1,3 @@
-import numpy as np
 import math
 
 class Solution(object):
@@ -43,11 +42,32 @@ class Solution(object):
             
         return None # should not happen
 
+    def sortArrayByParity(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        # use two pointers, one from start one from end
+        left = 0
+        right = len(nums) - 1
+
+        if right < 1:
+            return nums
+
+        while left < right:
+            while nums[left] % 2 == 0 and left < right:
+                left += 1
+            while nums[right] % 2 == 1 and left < right:
+                right -= 1
+            nums[left], nums[right] = nums[right], nums[left]
+
+        return nums
+
+
 
 sol = Solution()
 # nums1 = [1,3]
 # nums2 = [2]
-nums1 = [1, 3, 8, 9, 15]
-nums2 = [7, 11, 18, 19, 21, 25]
-result = sol.minimumEffortPath(heights)
+nums = [0,2]
+result = sol.sortArrayByParity(nums)
 print(result)
