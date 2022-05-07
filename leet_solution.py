@@ -1,4 +1,5 @@
 import math
+from sre_constants import MIN_REPEAT_ONE
 
 class Solution(object):
     def findMedianSortedArrays(self, nums1, nums2):
@@ -42,32 +43,62 @@ class Solution(object):
             
         return None # should not happen
 
-    def sortArrayByParity(self, nums):
+    def removeDuplicates(self, s, k):
+        """
+        :type s: str
+        :type k: int
+        :rtype: str
+        """
+        # strategy: using two stacks cause python string immutable
+        subendi = 0
+        stack = []
+        counts = []
+        n = len(s)
+        result = ""
+        for val in s:
+            if not stack or stack[-1] != val:
+                stack.append(val)
+                counts.append(1)
+            elif stack[-1] == val:
+                counts[-1] += 1
+            # when reach k
+            if counts[-1] == k:
+                counts.pop()
+                stack.pop()
+
+        for i in range(len(stack)):
+            result += stack[i]*counts[i]
+
+        return result
+    
+    def find132pattern(self, nums):
         """
         :type nums: List[int]
-        :rtype: List[int]
+        :rtype: bool
         """
-        # use two pointers, one from start one from end
-        left = 0
-        right = len(nums) - 1
-
-        if right < 1:
-            return nums
-
-        while left < right:
-            while nums[left] % 2 == 0 and left < right:
-                left += 1
-            while nums[right] % 2 == 1 and left < right:
-                right -= 1
-            nums[left], nums[right] = nums[right], nums[left]
-
-        return nums
-
+        n = len(nums)
+        if n < 3:
+            return False
+        stack = []
+        min_array = [-1] * n
+        min_array[0] = nums[0]
+        for i in range(1, n):
+            min_array[i] = min(min_array[i-1], nums[i])
+        
+        for j in range(n-1, -1, -1):
+            if nums[j] <= min_array[j]:
+                continue
+            while stack and stack[-1] <= min_array[j]:
+                stack.pop()
+            if stack and stack[-1] < nums[j]:
+                return True
+            stack.append(nums[j])
+        return False
 
 
 sol = Solution()
 # nums1 = [1,3]
 # nums2 = [2]
-nums = [0,2]
-result = sol.sortArrayByParity(nums)
+nums = [1,2,3,4]
+result = sol.find132pattern(nums)
 print(result)
