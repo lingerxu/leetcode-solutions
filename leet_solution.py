@@ -71,34 +71,56 @@ class Solution(object):
 
         return result
     
-    def find132pattern(self, nums):
+    def combinationSum3(self, k, n):
         """
-        :type nums: List[int]
-        :rtype: bool
+        :type k: int
+        :type n: int
+        :rtype: List[List[int]]
         """
-        n = len(nums)
-        if n < 3:
-            return False
-        stack = []
-        min_array = [-1] * n
-        min_array[0] = nums[0]
-        for i in range(1, n):
-            min_array[i] = min(min_array[i-1], nums[i])
-        
-        for j in range(n-1, -1, -1):
-            if nums[j] <= min_array[j]:
-                continue
-            while stack and stack[-1] <= min_array[j]:
-                stack.pop()
-            if stack and stack[-1] < nums[j]:
-                return True
-            stack.append(nums[j])
-        return False
+        results = []
 
+        def backtrack(remain, comb, next_start):
+            # print(f"remain is {remain}, comb is {comb}")
+            if remain == 0 and len(comb) == k:
+                # make a copy of current combination
+                # Otherwise the combination would be reverted in other branch of backtracking.
+                results.append(list(comb))
+                return
+            elif remain < 0 or len(comb) == k:
+                # exceed the scope, no need to explore further.
+                return
+
+            # Iterate through the reduced list of candidates.
+            for i in range(next_start, 9):
+                comb.append(i+1)
+                backtrack(remain-i-1, comb, i+1)
+                # backtrack the current choice
+                comb.pop()
+
+        backtrack(n, [], 0)
+
+        return results
+
+    def countVowelStrings(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        memo = [[0] * 5 for i in range(n)]
+        
+        for vowels in range(0, 5):
+            memo[0][vowels] = vowels+1
+        
+        for i in range(1, n):
+            memo[i][0] = 1
+            for vowels in range(1, 5):
+                memo[i][vowels] = memo[i][vowels-1] + memo[i-1][vowels]
+        
+        return memo[n-1][4]
+        
+        
 
 sol = Solution()
-# nums1 = [1,3]
-# nums2 = [2]
-nums = [1,2,3,4]
-result = sol.find132pattern(nums)
+n = 2
+result = sol.combinationSum3(3, 9)
 print(result)
