@@ -1,3 +1,5 @@
+from collections import defaultdict
+import heapq
 import math
 from sre_constants import MIN_REPEAT_ONE
 
@@ -43,84 +45,21 @@ class Solution(object):
             
         return None # should not happen
 
-    def removeDuplicates(self, s, k):
+    def networkDelayTime(self, times, n, k):
         """
-        :type s: str
-        :type k: int
-        :rtype: str
-        """
-        # strategy: using two stacks cause python string immutable
-        subendi = 0
-        stack = []
-        counts = []
-        n = len(s)
-        result = ""
-        for val in s:
-            if not stack or stack[-1] != val:
-                stack.append(val)
-                counts.append(1)
-            elif stack[-1] == val:
-                counts[-1] += 1
-            # when reach k
-            if counts[-1] == k:
-                counts.pop()
-                stack.pop()
-
-        for i in range(len(stack)):
-            result += stack[i]*counts[i]
-
-        return result
-    
-    def combinationSum3(self, k, n):
-        """
-        :type k: int
+        :type times: List[List[int]]
         :type n: int
-        :rtype: List[List[int]]
-        """
-        results = []
-
-        def backtrack(remain, comb, next_start):
-            # print(f"remain is {remain}, comb is {comb}")
-            if remain == 0 and len(comb) == k:
-                # make a copy of current combination
-                # Otherwise the combination would be reverted in other branch of backtracking.
-                results.append(list(comb))
-                return
-            elif remain < 0 or len(comb) == k:
-                # exceed the scope, no need to explore further.
-                return
-
-            # Iterate through the reduced list of candidates.
-            for i in range(next_start, 9):
-                comb.append(i+1)
-                backtrack(remain-i-1, comb, i+1)
-                # backtrack the current choice
-                comb.pop()
-
-        backtrack(n, [], 0)
-
-        return results
-
-    def countVowelStrings(self, n):
-        """
-        :type n: int
+        :type k: int
         :rtype: int
         """
-        memo = [[0] * 5 for i in range(n)]
-        
-        for vowels in range(0, 5):
-            memo[0][vowels] = vowels+1
-        
-        for i in range(1, n):
-            memo[i][0] = 1
-            for vowels in range(1, 5):
-                memo[i][vowels] = memo[i][vowels-1] + memo[i-1][vowels]
-        
-        return memo[n-1][4]
-        
-        
+        graph = defaultdict(list)
+        for src, dst, weight in times:
+            graph[src].append((dst, weight)) 
 
+        
 sol = Solution()
-n = 2
-result = sol.combinationSum3(3, 9)
+times = [[2,1,1],[2,3,1],[3,4,1]]
+n = 4
+k = 2
+result = sol.networkDelayTime(times, n, k)
 print(result)
