@@ -51,9 +51,44 @@ class Solution:
         
         # There was no path.
         return -1
+    
+    def longestIncreasingPath(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        :rtype: int
+        """
+        m = len(matrix)
+        n = len(matrix[0])
+        
+        # the cache for already computed max_increasing_path_length for index (i, j)
+        dp = [[-1] * n for _ in range(m)]
+        
+        def dfs(i, j, prev):
+            if i < 0 or j < 0 or i >= m or j >= n or matrix[i][j] <= prev:
+                return 0
+            
+            # already computed
+            if dp[i][j] != -1:
+                return dp[i][j]
+            
+            left = dfs(i, j - 1, matrix[i][j])
+            right = dfs(i, j + 1, matrix[i][j])
+            top = dfs(i - 1, j, matrix[i][j])
+            bottom = dfs(i + 1, j, matrix[i][j])
+            
+            dp[i][j] = max(left, right, top, bottom) + 1
+            return dp[i][j]
+        
+        result = -1
+        for i in range(m):
+            for j in range(n):
+                result = max(result, dfs(i, j, -1))
+        return result
 
 # graph = [[1,2,3],[0],[0],[0]]
 sol = Solution()
-grid = [[0,1,1,1,1,1,1,1],[0,1,1,0,0,0,0,0],[0,1,0,1,1,1,1,0],[0,1,0,1,1,1,1,0],[0,1,1,0,0,1,1,0],[0,1,1,1,1,0,1,0],[0,0,0,0,0,1,1,0],[1,1,1,1,1,1,1,0]]
-result = sol.shortestPathBinaryMatrix(grid)
+# grid = [[0,1,1,1,1,1,1,1],[0,1,1,0,0,0,0,0],[0,1,0,1,1,1,1,0],[0,1,0,1,1,1,1,0],[0,1,1,0,0,1,1,0],[0,1,1,1,1,0,1,0],[0,0,0,0,0,1,1,0],[1,1,1,1,1,1,1,0]]
+# result = sol.shortestPathBinaryMatrix(grid)
+matrix = [[9,9,4],[6,6,8],[2,1,1]]
+result = sol.longestIncreasingPath(matrix)
 print(result)
