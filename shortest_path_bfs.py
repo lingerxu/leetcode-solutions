@@ -84,11 +84,35 @@ class Solution:
             for j in range(n):
                 result = max(result, dfs(i, j, -1))
         return result
+        
+    def uniquePathsWithObstacles(self, obstacleGrid):
+        """
+        :type obstacleGrid: List[List[int]]
+        :rtype: int
+        """
+        m = len(obstacleGrid)
+        n = len(obstacleGrid[0])
+
+        if obstacleGrid[0][0] == 1 or obstacleGrid[m-1][n-1] == 1:
+            return 0
+        
+        obstacleGrid[0][0] = 1
+
+        for i in range(1, m):
+            obstacleGrid[i][0] = int(obstacleGrid[i][0] == 0 and obstacleGrid[i-1][0] == 1)
+
+        for j in range(1, n):
+            obstacleGrid[0][j] = int(obstacleGrid[0][j] == 0 and obstacleGrid[0][j-1] == 1)
+
+        for i in range(1, m):
+            for j in range(1, n):
+                
+
 
 # graph = [[1,2,3],[0],[0],[0]]
 sol = Solution()
 # grid = [[0,1,1,1,1,1,1,1],[0,1,1,0,0,0,0,0],[0,1,0,1,1,1,1,0],[0,1,0,1,1,1,1,0],[0,1,1,0,0,1,1,0],[0,1,1,1,1,0,1,0],[0,0,0,0,0,1,1,0],[1,1,1,1,1,1,1,0]]
 # result = sol.shortestPathBinaryMatrix(grid)
-matrix = [[9,9,4],[6,6,8],[2,1,1]]
-result = sol.longestIncreasingPath(matrix)
+obstacleGrid = [[0,0,0,0],[0,1,0,0],[0,0,0,0],[0,0,1,0],[0,0,0,0]]
+result = sol.uniquePathsWithObstacles(obstacleGrid)
 print(result)

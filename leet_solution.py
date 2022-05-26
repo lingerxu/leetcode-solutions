@@ -1,4 +1,6 @@
+from bisect import bisect_left
 from collections import defaultdict
+from functools import cache
 import heapq
 import math
 from sre_constants import MIN_REPEAT_ONE
@@ -56,10 +58,38 @@ class Solution(object):
         for src, dst, weight in times:
             graph[src].append((dst, weight)) 
 
+    
+    def maxEnvelopes(self, envelopes):
+        """
+        :type envelopes: List[List[int]]
+        :rtype: int
+        """
+        # sort increasing in first dimension and decreasing on second
+        envelopes.sort(key = lambda x: (x[0], -x[1]))
+        print(envelopes)
+
+        def lis(nums):
+            dp = []
+            for i in range(len(nums)):
+                idx = bisect_left(dp, nums[i])
+                if idx == len(dp):
+                    dp.append(nums[i])
+                else:
+                    dp[idx] = nums[i]
+            return len(dp)
+        
+        # extract the second dimension and run the LIS
+        return lis([i[1] for i in envelopes])
+
         
 sol = Solution()
-times = [[2,1,1],[2,3,1],[3,4,1]]
-n = 4
-k = 2
-result = sol.networkDelayTime(times, n, k)
+# times = [[2,1,1],[2,3,1],[3,4,1]]
+# n = 4
+# k = 2
+# result = sol.networkDelayTime(times, n, k)
+strs = ["10","0001","111001","1","0"]
+m = 5
+n = 3
+envelopes = [[5,4],[6,4],[6,7],[2,3]]
+result = sol.maxEnvelopes(envelopes)
 print(result)
