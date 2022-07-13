@@ -44,52 +44,119 @@ class Solution(object):
                 low = mid1 + 1
             else:
                 return (max(L1, L2) + min(R1, R2) / 2)
-            
+        
         return None # should not happen
 
-    def networkDelayTime(self, times, n, k):
-        """
-        :type times: List[List[int]]
-        :type n: int
-        :type k: int
-        :rtype: int
-        """
-        graph = defaultdict(list)
-        for src, dst, weight in times:
-            graph[src].append((dst, weight)) 
-
     
-    def maxEnvelopes(self, envelopes):
+    def divide(self, dividend, divisor):
         """
-        :type envelopes: List[List[int]]
+        :type dividend: int
+        :type divisor: int
         :rtype: int
         """
-        # sort increasing in first dimension and decreasing on second
-        envelopes.sort(key = lambda x: (x[0], -x[1]))
-        print(envelopes)
+        # Constants.
+        MAX_INT = 2147483647        # 2**31 - 1
+        MIN_INT = -2147483648       # -2**31
 
-        def lis(nums):
-            dp = []
-            for i in range(len(nums)):
-                idx = bisect_left(dp, nums[i])
-                if idx == len(dp):
-                    dp.append(nums[i])
-                else:
-                    dp[idx] = nums[i]
-            return len(dp)
-        
-        # extract the second dimension and run the LIS
-        return lis([i[1] for i in envelopes])
+        # Special case: overflow.
+        if dividend == MIN_INT and divisor == -1:
+            return MAX_INT
 
+        # We need to convert both numbers to negatives
+        # for the reasons explained above.
+        # Also, we count the number of negatives signs.
+        negatives = 2
+        if dividend > 0:
+            negatives -= 1
+            dividend = -dividend
+        if divisor > 0:
+            negatives -= 1
+            divisor = -divisor
+
+        # Count how many times the divisor has to be
+        # added to get the dividend. This is the quotient.
+        quotient = 0
+        while dividend - divisor <= 0:
+            quotient -= 1
+            dividend -= divisor
+
+        # If there was originally one negative sign, then
+        # the quotient remains negative. Otherwise, switch
+        # it to positive.
+        return -quotient if negatives != 1 else quotient
+
+    def lengthOfLongestSubstring(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        n = len(s)
+        left = 0
+        letterset = set(s[0])
+        right = 1
+        curr_len = 0
+        max_len = 1
+        while right < n:
+            ch = s[right]
+            if ch not in letterset:
+                letterset.add(ch)
+                right += 1
+            else:
+                curr_len = right - left # becuase right is already +1, so no need to +1
+                max_len = max(curr_len, max_len)
+                letterset.remove(s[left])
+                left += 1 # left > right won't happen, because when left == right, letterset will be empty
+
+        return max_len
+
+    def longestStrChain(self, words):
+        """
+        :type words: List[str]
+        :rtype: int
+        """
+        # make a helper function to check if previous word is a predecessor of next word
+        def check_pred(word1, word2):
+            count_diff = 0
+            pointer1 = pointer2 = 0
+            len1 = len(word1)
+            len2 = len(word2)
+
+            while pointer1 < len1 and pointer2 < len2:
+                if word1[pointer1] == word2[pointer2]:
+                    pointer1 += 1
+                    pointer2 += 1
+                    continue
+                # 
+
+        n = len(words)
+
+
+    def suggestedProducts(self, products, searchWord):
+        """
+        :type products: List[str]
+        :type searchWord: str
+        :rtype: List[List[str]]
+        """
+        products.sort()
+        n = len(products)
+        indices = [i for i in range(n)]
+        res = [indices]
+        for idx, c in enumerate(searchWord):
+            indices = [i for i in indices if len(products[i]) > idx and products[i][idx] == c]                                                                
+            res.append(products[i] for i in indices[:3])        
+        return res
         
 sol = Solution()
 # times = [[2,1,1],[2,3,1],[3,4,1]]
 # n = 4
 # k = 2
 # result = sol.networkDelayTime(times, n, k)
-strs = ["10","0001","111001","1","0"]
-m = 5
-n = 3
-envelopes = [[5,4],[6,4],[6,7],[2,3]]
-result = sol.maxEnvelopes(envelopes)
+# s = "abcabcbb"
+# result = sol.lengthOfLongestSubstring(s)
+# word1 = "sea"
+# word2 = "eat"
+# result = sol.minDistance(word1, word2)
+products = ["mobile","mouse","moneypot","monitor","mousepad"]
+searchWord = "mouse"
+result = sol.suggestedProducts(products, searchWord)
 print(result)

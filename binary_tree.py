@@ -294,7 +294,7 @@ class Solution(object):
             return levels
 
         level = 0
-        treequeue = [root]
+        treequeue = deque[root]
 
         while treequeue:
             levels.append([])
@@ -303,7 +303,7 @@ class Solution(object):
             
             for _ in range(level_length):
                 # pop the first node from tree queue
-                curr = treequeue.pop(0)
+                curr = treequeue.popleft()
                 levels[level].append(curr.val)
                 #prepare for the next level
                 if curr.left:
