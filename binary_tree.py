@@ -294,7 +294,9 @@ class Solution(object):
             return levels
 
         level = 0
-        treequeue = deque[root]
+        # deque() implementation uses a doubly linked list, popleft is O(1)
+        # while list.pop(0) needs shifts of the rest n-1 elements
+        treequeue = deque([root])
 
         while treequeue:
             levels.append([])

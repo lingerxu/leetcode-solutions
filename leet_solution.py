@@ -1,9 +1,12 @@
 from bisect import bisect_left
 from collections import defaultdict
-from functools import cache
+from functools import cache, lru_cache
 import heapq
 import math
 from sre_constants import MIN_REPEAT_ONE
+from matplotlib.pyplot import connect
+
+from sklearn import neighbors
 
 class Solution(object):
     def findMedianSortedArrays(self, nums1, nums2):
@@ -131,20 +134,28 @@ class Solution(object):
         n = len(words)
 
 
-    def suggestedProducts(self, products, searchWord):
+    def findPaths(self, m, n, maxMove, startRow, startColumn):
         """
-        :type products: List[str]
-        :type searchWord: str
-        :rtype: List[List[str]]
+        :type m: int
+        :type n: int
+        :type maxMove: int
+        :type startRow: int
+        :type startColumn: int
+        :rtype: int
         """
-        products.sort()
-        n = len(products)
-        indices = [i for i in range(n)]
-        res = [indices]
-        for idx, c in enumerate(searchWord):
-            indices = [i for i in indices if len(products[i]) > idx and products[i][idx] == c]                                                                
-            res.append(products[i] for i in indices[:3])        
-        return res
+        M = 10**9 + 7
+        @lru_cache(None)
+        def moves(move, row, col):
+            if row >= m or row < 0 or col >= n or col < 0:
+                return 1
+            if move < 1:
+                return 0
+            move -= 1
+
+            return (moves(move, row+1, col) + moves(move, row-1, col) + moves(move, row, col+1) + moves(move, row, col-1)) % M
+
+        return moves(maxMove, startRow, startColumn)
+
         
 sol = Solution()
 # times = [[2,1,1],[2,3,1],[3,4,1]]
@@ -156,7 +167,13 @@ sol = Solution()
 # word1 = "sea"
 # word2 = "eat"
 # result = sol.minDistance(word1, word2)
-products = ["mobile","mouse","moneypot","monitor","mousepad"]
-searchWord = "mouse"
-result = sol.suggestedProducts(products, searchWord)
+# products = ["mobile","mouse","moneypot","monitor","mousepad"]
+# searchWord = "mouse"
+# result = sol.suggestedProducts(products, searchWord)
+m = 1
+n = 3
+maxMove = 3
+startRow = 0
+startColumn = 1
+result = sol.findPaths(m, n, maxMove, startRow, startColumn)
 print(result)
