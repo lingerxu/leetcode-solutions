@@ -664,6 +664,27 @@ class Solution(object):
             
         return root
 
+    def flatten(self, node):
+        """
+        :type root: TreeNode
+        :rtype: None Do not return anything, modify root in-place instead.
+        """
+        if not node:
+            return None
+        
+        if not node.left and not node.right:
+            return node
+        
+        left = self.flatten(node.left)
+        right = self.flatten(node.right)
+
+        if left:
+            left.right = node.right
+            node.right = node.left
+            node.left = None
+        
+        return right if right else left
+
 root = TreeNode(1, TreeNode(2, TreeNode(4, None, None), TreeNode(5, TreeNode(4, None, None), None)), TreeNode(3, TreeNode(6, None, None), None))
 root = TreeNode(6, TreeNode(2, TreeNode(0), TreeNode(4, TreeNode(3), TreeNode(5))), TreeNode(8, TreeNode(7), TreeNode(9)))
 
@@ -673,7 +694,8 @@ root = TreeNode(6, TreeNode(2, TreeNode(0), TreeNode(4, TreeNode(3), TreeNode(5)
 # root = TreeNode(3, TreeNode(1), TreeNode(4, TreeNode(2)))
 root.prettyprint()
 sol = Solution()
-result = sol.deleteNode(root, 8)
+# result = sol.deleteNode(root, 8)
+result = sol.flatten(root)
 if isinstance(result, TreeNode):
     result.prettyprint()
 else:

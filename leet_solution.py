@@ -1,5 +1,6 @@
 from bisect import bisect_left
 from collections import defaultdict
+import collections
 from functools import cache, lru_cache
 import heapq
 import math
@@ -143,19 +144,62 @@ class Solution(object):
         :type startColumn: int
         :rtype: int
         """
-        M = 10**9 + 7
-        @lru_cache(None)
-        def moves(move, row, col):
-            if row >= m or row < 0 or col >= n or col < 0:
-                return 1
-            if move < 1:
-                return 0
-            move -= 1
+        MOD = 10**9 + 7
+        curr_dp = [[0] * n for _ in range(m)]
+        curr_dp[startRow][startColumn] = 1
+        result = 0
+        
+        for _ in range(maxMove):
+            next_dp = [[0] * n for _ in range(m)]
+            for ridx in range(m):
+                for cidx in range(n):
+                    neighbors = ((ridx + 1, cidx), (ridx, cidx + 1), (ridx - 1, cidx), (ridx, cidx - 1))
+                    for newri, newci in neighbors:
+                        if newri >= 0 and newri < m and newci >= 0 and newci < n:
+                            next_dp[newri][newci] = (next_dp[newri][newci] + curr_dp[ridx][cidx]) %  MOD
+                        else:
+                            result = (result + curr_dp[ridx][cidx]) % MOD
 
-            return (moves(move, row+1, col) + moves(move, row-1, col) + moves(move, row, col+1) + moves(move, row, col-1)) % M
+            curr_dp = next_dp
+        return result
 
-        return moves(maxMove, startRow, startColumn)
+    def numMatchingSubseq(self, s, words):
+        """
+        :type s: str
+        :type words: List[str]
+        :rtype: int
+        """
+        result = 0
+        waiting = collections.defaultdict(list)
+        for w in words:
+            waiting[w[0]].append(iter(w[1:]))
+        print(waiting)
+        for c in s:
+            for it in waiting.pop(c, ()):
+                waiting[next(it, None)].append(it)
+            print(waiting)
 
+        return len(waiting[None])
+    
+
+    def sumEvenAfterQueries(self, nums, queries):
+        """
+        :type nums: List[int]
+        :type queries: List[List[int]]
+        :rtype: List[int]
+        """
+        even_sum = sum(x for x in nums if x % 2 == 0)
+        result = []
+
+        for val, idx in queries:
+            if nums[idx] % 2 == 0:
+                even_sum -= nums[idx]
+            nums[idx] += val
+            if nums[idx] % 2 == 0:
+                even_sum += nums[idx]
+            result.append(even_sum)
+        
+        return result
         
 sol = Solution()
 # times = [[2,1,1],[2,3,1],[3,4,1]]
@@ -175,5 +219,11 @@ n = 3
 maxMove = 3
 startRow = 0
 startColumn = 1
-result = sol.findPaths(m, n, maxMove, startRow, startColumn)
+# result = sol.findPaths(m, n, maxMove, startRow, startColumn)
+# s = "abcde"
+# words = ["a","bb","acd","ace"]
+# result = sol.numMatchingSubseq(s, words)
+nums = [1,2,3,4]
+queries = [[1,0],[-3,1],[-4,0],[2,3]]
+result = sol.sumEvenAfterQueries(nums, queries)
 print(result)
