@@ -144,8 +144,7 @@ class Solution(object):
         swapk.next, swapm.next = swapm.next, swapk.next
 
         return dummyhead.next
-
-
+        
     def removeNthFromEnd(self, head, n):
         """
         :type head: ListNode
@@ -165,8 +164,10 @@ class Solution(object):
         prevn.next = prevn.next.next
 
         return dummyhead.next
+
         
-input_list = [1]
+        
+input_list = [1, 2]
 n = 1
 head, tail = convert_list(input_list)
 head.prettyprint()

@@ -1,13 +1,5 @@
-from bisect import bisect_left
-from collections import defaultdict
-import collections
-from functools import cache, lru_cache
-import heapq
-import math
-from sre_constants import MIN_REPEAT_ONE
-from matplotlib.pyplot import connect
+from filecmp import cmp
 
-from sklearn import neighbors
 
 class Solution(object):
     def findMedianSortedArrays(self, nums1, nums2):
@@ -180,26 +172,16 @@ class Solution(object):
             print(waiting)
 
         return len(waiting[None])
-    
 
-    def sumEvenAfterQueries(self, nums, queries):
+    def reverseWords(self, s):
         """
-        :type nums: List[int]
-        :type queries: List[List[int]]
-        :rtype: List[int]
+        :type s: str
+        :rtype: str
         """
-        even_sum = sum(x for x in nums if x % 2 == 0)
-        result = []
+        return " ".join([word[::-1] for word in s.split()])
 
-        for val, idx in queries:
-            if nums[idx] % 2 == 0:
-                even_sum -= nums[idx]
-            nums[idx] += val
-            if nums[idx] % 2 == 0:
-                even_sum += nums[idx]
-            result.append(even_sum)
-        
-        return result
+
+
         
 sol = Solution()
 # times = [[2,1,1],[2,3,1],[3,4,1]]
@@ -223,7 +205,6 @@ startColumn = 1
 # s = "abcde"
 # words = ["a","bb","acd","ace"]
 # result = sol.numMatchingSubseq(s, words)
-nums = [1,2,3,4]
-queries = [[1,0],[-3,1],[-4,0],[2,3]]
-result = sol.sumEvenAfterQueries(nums, queries)
+dominoes = ".L.R...LR..L.."
+result = sol.pushDominoes(dominoes)
 print(result)
