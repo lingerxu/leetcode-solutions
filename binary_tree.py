@@ -685,6 +685,37 @@ class Solution(object):
         
         return right if right else left
 
+
+    def addOneRow(self, root, val, depth):
+        """
+        :type root: TreeNode
+        :type val: int
+        :type depth: int
+        :rtype: TreeNode
+        """
+        dummyhead = TreeNode(-1, root, None)
+        myque = deque([dummyhead])
+        for _ in range(depth - 1):
+            len_level = len(myque)
+            curr_level = []
+            for _ in range(len_level):
+                curr = myque.popleft()
+                if curr.left:
+                    myque.append(curr.left)
+                if curr.right:
+                    myque.append(curr.right)
+        for node in myque:
+            newleft = TreeNode(val)
+            if node.left:
+                newleft.left = node.left
+            node.left = newleft
+            newright = TreeNode(val)
+            if node.right:
+                newright.right = node.right
+            node.right = newright
+
+        return dummyhead.left
+
 root = TreeNode(1, TreeNode(2, TreeNode(4, None, None), TreeNode(5, TreeNode(4, None, None), None)), TreeNode(3, TreeNode(6, None, None), None))
 root = TreeNode(6, TreeNode(2, TreeNode(0), TreeNode(4, TreeNode(3), TreeNode(5))), TreeNode(8, TreeNode(7), TreeNode(9)))
 
@@ -695,8 +726,10 @@ root = TreeNode(6, TreeNode(2, TreeNode(0), TreeNode(4, TreeNode(3), TreeNode(5)
 root.prettyprint()
 sol = Solution()
 # result = sol.deleteNode(root, 8)
-result = sol.flatten(root)
+# result = sol.flatten(root)
+result = sol.addOneRow(root, 1, 2)
 if isinstance(result, TreeNode):
     result.prettyprint()
 else:
-    print(result)
+    for node in result:
+        print(node.val)

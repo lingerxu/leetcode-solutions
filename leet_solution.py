@@ -180,6 +180,7 @@ class Solution(object):
         """
         return " ".join([word[::-1] for word in s.split()])
 
+    
 
 
         
@@ -206,5 +207,15 @@ startColumn = 1
 # words = ["a","bb","acd","ace"]
 # result = sol.numMatchingSubseq(s, words)
 dominoes = ".L.R...LR..L.."
-result = sol.pushDominoes(dominoes)
-print(result)
+# result = sol.pushDominoes(dominoes)
+# print(result)
+
+a = [0] * 26
+b = a * 1
+b[1] = 1
+print(a)
+print(b)
+b = a[:]
+b[2] = 2
+print(a)
+print(b)
