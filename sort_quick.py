@@ -34,7 +34,7 @@ def quickSort(array, low, high):
     # element smaller than pivot are on the left
     # element greater than pivot are on the right
     pi = partition(array, low, high)
-    print(f"{array} with pi_idx {pi} {array[pi]}")
+    print(f"{array} with pi_idx {pi} pi_value as {array[pi]}")
 
     # recursive call on the left of pivot
     quickSort(array, low, pi - 1)

@@ -1,6 +1,3 @@
-from filecmp import cmp
-
-
 class Solution(object):
     def findMedianSortedArrays(self, nums1, nums2):
         """
@@ -20,27 +17,26 @@ class Solution(object):
             n1, n2 = n2, n1
         
         low = 0
-        high = n1 * 2
+        high = n1
         while low <= high:
             print("---------------------")
             print(f"low:{low}, high:{high}")
-            mid1 = low + (high - low) // 2
-            mid2 = n1 + n2 - mid1 # calculate cut position based on the shorter array
+            mid1 = low + (high - low) // 2 # medium of nums1
+            mid2 = (n1 + n2 + 1)//2 - mid1 # so that we have almost equal number of elements on both sides of the cut points with two arrays together
             print(f"mid1:{mid1}, mid2:{mid2}")
 
-            L1 = nums1[(mid1 - 1) // 2] if mid1 > 0 else MIN_INT
-            L2 = nums2[(mid2 - 1) // 2] if mid2 > 0 else MIN_INT
-            R1 = nums1[mid1 // 2] if mid1 < n1 * 2 else MAX_INT
-            R2 = nums1[mid2 // 2] if mid2 < n1 * 2 else MAX_INT
-            print(f"L1:{L1}, L2:{L2}, R1:{R1}, R2:{R2}")
+            maxleft1 = nums1[mid1-1] if mid1 > 0 else MIN_INT
+            minright1 = nums1[mid1] if mid1 < n1 else MAX_INT
+            maxleft2 = nums2[mid2-1] if mid2 > 0 else MIN_INT
+            minright2 = nums2[mid2] if mid2 < n2 else MAX_INT
+            print(f"maxleft1:{maxleft1}, minright1:{minright1}, maxleft2:{maxleft2}, minright2:{minright2}")
 
-            if L1 > R2:
-                high = mid1 - 1
-            elif L2 > R1:
-                low = mid1 + 1
+            if maxleft1 > minright2:
+                high = mid1 - 1 # move to the left side
+            elif maxleft2 > minright1:
+                low = mid1 + 1 # move to the right side
             else:
-                return (max(L1, L2) + min(R1, R2) / 2)
-        
+                return (max(maxleft1, maxleft2) + min(minright1, minright2)) / 2 if (n1+n2)%2 == 0 else max(maxleft1, maxleft2)        
         return None # should not happen
 
     
@@ -173,18 +169,11 @@ class Solution(object):
 
         return len(waiting[None])
 
-    def reverseWords(self, s):
-        """
-        :type s: str
-        :rtype: str
-        """
-        return " ".join([word[::-1] for word in s.split()])
-
-    
-
-
         
 sol = Solution()
+nums1 = [1, 2]
+nums2 = [3, 4, 5, 6, 7, 8, 9]
+result = sol.findMedianSortedArrays(nums1, nums2)
 # times = [[2,1,1],[2,3,1],[3,4,1]]
 # n = 4
 # k = 2
@@ -197,25 +186,15 @@ sol = Solution()
 # products = ["mobile","mouse","moneypot","monitor","mousepad"]
 # searchWord = "mouse"
 # result = sol.suggestedProducts(products, searchWord)
-m = 1
-n = 3
-maxMove = 3
-startRow = 0
-startColumn = 1
+# m = 1
+# n = 3
+# maxMove = 3
+# startRow = 0
+# startColumn = 1
 # result = sol.findPaths(m, n, maxMove, startRow, startColumn)
 # s = "abcde"
 # words = ["a","bb","acd","ace"]
 # result = sol.numMatchingSubseq(s, words)
-dominoes = ".L.R...LR..L.."
+# dominoes = ".L.R...LR..L.."
 # result = sol.pushDominoes(dominoes)
-# print(result)
-
-a = [0] * 26
-b = a * 1
-b[1] = 1
-print(a)
-print(b)
-b = a[:]
-b[2] = 2
-print(a)
-print(b)
+print(result)
