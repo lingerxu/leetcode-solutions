@@ -165,9 +165,20 @@ class Solution(object):
 
         return dummyhead.next
 
+    def deleteNode(self, node):
+        """
+        :type node: ListNode
+        :rtype: void Do not return anything, modify node in-place instead.
+        """
+        nextnode = node.next
+        node.val = nextnode.val
+        node.next = nextnode.next
+        # nextnode.next = None
+        del(nextnode)
+
         
         
-input_list = [1, 2]
+input_list = [1, 2, 3, 4]
 n = 1
 head, tail = convert_list(input_list)
 head.prettyprint()
@@ -176,9 +187,14 @@ head.prettyprint()
 # head.prettyprint()
 
 sol = Solution()
-result = sol.removeNthFromEnd(head, n)
-if result:
-    # print(result.val)
-    result.prettyprint()
-else:
-    print(result)
+# result = sol.removeNthFromEnd(head, n)
+# if result:
+#     # print(result.val)
+#     result.prettyprint()
+# else:
+#     print(result)
+node = head.next.next
+print(node.val)
+# sol.deleteNode(node)
+del(node)
+head.prettyprint()

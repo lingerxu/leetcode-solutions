@@ -1,4 +1,20 @@
+from bisect import bisect, bisect_left
+import heapq
+from itertools import accumulate
+from random import randint
+
+
 class Solution(object):
+    # def __init__(self, citypopulations):
+    #     self.cities, self.culumative_sum = zip(*citypopulations)
+    #     self.culumative_sum = list(accumulate(self.culumative_sum))
+    #     print(self.cities)
+    #     print(self.culumative_sum)
+
+    def get_random_city(self):
+        choice = randint(1, self.culumative_sum[-1])
+        return self.cities[bisect_left(self.culumative_sum, choice)]
+
     def findMedianSortedArrays(self, nums1, nums2):
         """
         :type nums1: List[int]
@@ -151,50 +167,23 @@ class Solution(object):
             curr_dp = next_dp
         return result
 
-    def numMatchingSubseq(self, s, words):
+    def checkIfPangram(self, sentence):
         """
-        :type s: str
-        :type words: List[str]
-        :rtype: int
+        :type sentence: str
+        :rtype: bool
         """
-        result = 0
-        waiting = collections.defaultdict(list)
-        for w in words:
-            waiting[w[0]].append(iter(w[1:]))
-        print(waiting)
-        for c in s:
-            for it in waiting.pop(c, ()):
-                waiting[next(it, None)].append(it)
-            print(waiting)
-
-        return len(waiting[None])
-
+        flaglist = [False] * 26
         
+        for char in sentence:
+            flaglist[ord(char)-ord('a')] = True
+
+        return all(flaglist)
+
+
 sol = Solution()
-nums1 = [1, 2]
-nums2 = [3, 4, 5, 6, 7, 8, 9]
-result = sol.findMedianSortedArrays(nums1, nums2)
-# times = [[2,1,1],[2,3,1],[3,4,1]]
-# n = 4
-# k = 2
-# result = sol.networkDelayTime(times, n, k)
-# s = "abcabcbb"
-# result = sol.lengthOfLongestSubstring(s)
-# word1 = "sea"
-# word2 = "eat"
-# result = sol.minDistance(word1, word2)
-# products = ["mobile","mouse","moneypot","monitor","mousepad"]
-# searchWord = "mouse"
-# result = sol.suggestedProducts(products, searchWord)
-# m = 1
-# n = 3
-# maxMove = 3
-# startRow = 0
-# startColumn = 1
-# result = sol.findPaths(m, n, maxMove, startRow, startColumn)
-# s = "abcde"
-# words = ["a","bb","acd","ace"]
-# result = sol.numMatchingSubseq(s, words)
-# dominoes = ".L.R...LR..L.."
-# result = sol.pushDominoes(dominoes)
+sentence = "leetcode"
+result = sol.checkIfPangram(sentence)
 print(result)
+
+
+# sol = Solution([("ny", 7), ("sf", 5), ("la", 8)])
